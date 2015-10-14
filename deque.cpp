@@ -24,6 +24,7 @@ public:
 
   void PushLeft(int val)
   {
+    cout << "left adding: " << val << "\n";
     QNode * newNode = new QNode();
     newNode->val = val; 
     __transaction_atomic
@@ -32,12 +33,17 @@ public:
 	  leftSentinel->left = newNode;
 	  newNode->right = leftSentinel;
 	}
+	//If que was empty
+	if (rightSentinel == NULL){
+	  rightSentinel = newNode;
+	}
 	leftSentinel = newNode;
       }
   }
 
   void PushRight(int val)
   {
+    cout << "right adding: " << val << "\n";
     QNode * newNode = new QNode();
     newNode->val = val; 
     __transaction_atomic
@@ -46,29 +52,92 @@ public:
 	  rightSentinel->right = newNode;
 	  newNode->left = rightSentinel;
 	}
+	//If que was empty
+	if (leftSentinel == NULL){
+	  leftSentinel = newNode;
+	}
 	rightSentinel = newNode;
       }
   }
 
   int PopLeft()
   {
-    // TODO
-    return -1;
+        cout << "left poting \n";
+    QNode * temp;
+    int val;
+    if (leftSentinel == NULL){
+      return -1;
+    }
+    __transaction_atomic
+      {
+	val = leftSentinel->val;
+	temp = leftSentinel;
+	leftSentinel = leftSentinel->right;
+	//if que not empty
+	if (leftSentinel != NULL){
+	  leftSentinel->left = NULL;
+	}else{
+	  rightSentinel = NULL;
+	}
+	
+      }
+    delete temp;
+    return val;
   }
 
   int PopRight()
   {
-    // TODO
-    return -1;
+        cout << "right poting \n";
+    QNode * temp;
+    int val;
+    if (rightSentinel == NULL){
+      return -1;
+    }
+    __transaction_atomic
+      {
+	val = rightSentinel->val;
+	temp = rightSentinel;
+	rightSentinel = rightSentinel->left;
+	//if que not empty
+	if (rightSentinel != NULL){
+	  rightSentinel->right = NULL;
+	}else{
+	  leftSentinel= NULL;
+	}
+
+      }
+    delete temp;
+    return val;
   }
 
-
-  int main()
-  {
-    // cout << "program has started";
-    DQueue * que = new DQueue();
-    que->PushLeft(1);
-    que->PushRight(1);
-      return 0;
+  void printQueFromRight(){
+    if (rightSentinel == NULL){
+       cout << "que is empty \n";
+    }
+    QNode * temp = rightSentinel;
+    while(temp != NULL){
+      cout << "value of node is: " << temp->val << " \n";
+       temp = temp->left;
+    }
+    cout << "\n"; 
   }
 };
+
+
+
+int main()
+{
+  cout << "program has started \n";
+  DQueue * que = new DQueue();
+  que->PushLeft(1);
+  que->printQueFromRight();
+  que->PushRight(2);
+  que->printQueFromRight();
+  que->PopRight();
+  que->printQueFromRight();
+  que->PushLeft(25);
+  que->printQueFromRight();
+  que->PopRight();
+  que->printQueFromRight();
+  return 0;
+}
