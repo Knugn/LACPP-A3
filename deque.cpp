@@ -12,11 +12,12 @@ class DQueue
   };
 
   QNode *leftSentinel, *rightSentinel;
-
+  bool print;
 public:
 
-  DQueue()
+  DQueue(bool print)
   {
+    this->print = print;
     leftSentinel = NULL;
     rightSentinel = NULL;
 
@@ -24,7 +25,9 @@ public:
 
   void PushLeft(int val)
   {
-    cout << "left adding: " << val << "\n";
+    if (print){
+      cout << "left adding: " << val << "\n";
+    }
     QNode * newNode = new QNode();
     newNode->val = val; 
     __transaction_atomic
@@ -43,7 +46,9 @@ public:
 
   void PushRight(int val)
   {
-    cout << "right adding: " << val << "\n";
+    if (print){
+      cout << "right adding: " << val << "\n";
+    }
     QNode * newNode = new QNode();
     newNode->val = val; 
     __transaction_atomic
@@ -62,7 +67,9 @@ public:
 
   int PopLeft()
   {
-        cout << "left poting \n";
+    if (print){
+      cout << "left poping \n";
+    }
     QNode * temp;
     int val;
     if (leftSentinel == NULL){
@@ -87,7 +94,9 @@ public:
 
   int PopRight()
   {
-        cout << "right poting \n";
+    if (print){
+      cout << "right poping \n";
+    }
     QNode * temp;
     int val;
     if (rightSentinel == NULL){
@@ -112,12 +121,12 @@ public:
 
   void printQueFromRight(){
     if (rightSentinel == NULL){
-       cout << "que is empty \n";
+      cout << "que is empty \n";
     }
     QNode * temp = rightSentinel;
     while(temp != NULL){
       cout << "value of node is: " << temp->val << " \n";
-       temp = temp->left;
+      temp = temp->left;
     }
     cout << "\n"; 
   }
@@ -128,15 +137,19 @@ public:
 int main()
 {
   cout << "program has started \n";
-  DQueue * que = new DQueue();
+  DQueue * que = new DQueue(true);
   que->PushLeft(1);
   que->printQueFromRight();
+
   que->PushRight(2);
   que->printQueFromRight();
+
   que->PopRight();
   que->printQueFromRight();
+
   que->PushLeft(25);
   que->printQueFromRight();
+
   que->PopRight();
   que->printQueFromRight();
   return 0;
