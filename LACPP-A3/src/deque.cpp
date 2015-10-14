@@ -1,21 +1,10 @@
 #include <cstddef>
 #include <iostream>
-
+#include "deque.h"
 using namespace std;
 
-class DQueue
-{
-  struct QNode
-  {
-    QNode *left, *right;
-    int val;
-  };
 
-  QNode *leftSentinel, *rightSentinel;
-  bool print;
-public:
-
-  DQueue(bool print)
+DQueue::DQueue(bool print)
   {
     this->print = print;
     leftSentinel = NULL;
@@ -23,7 +12,7 @@ public:
 
   }
 
-  void PushLeft(int val)
+  void DQueue::PushLeft(int val)
   {
     if (print){
       cout << "left adding: " << val << "\n";
@@ -44,7 +33,7 @@ public:
       }
   }
 
-  void PushRight(int val)
+  void DQueue::PushRight(int val)
   {
     if (print){
       cout << "right adding: " << val << "\n";
@@ -65,7 +54,7 @@ public:
       }
   }
 
-  int PopLeft()
+  int DQueue::PopLeft()
   {
     if (print){
       cout << "left poping \n";
@@ -92,7 +81,7 @@ public:
     return val;
   }
 
-  int PopRight()
+  int DQueue::PopRight()
   {
     if (print){
       cout << "right poping \n";
@@ -119,7 +108,7 @@ public:
     return val;
   }
 
-  void printQueFromRight(){
+  void DQueue::printQueFromRight(){
     if (rightSentinel == NULL){
       cout << "que is empty \n";
     }
@@ -130,9 +119,9 @@ public:
     }
     cout << "\n"; 
   }
-};
 
 
+/*
 
 int main()
 {
@@ -154,3 +143,4 @@ int main()
   que->printQueFromRight();
   return 0;
 }
+*/
