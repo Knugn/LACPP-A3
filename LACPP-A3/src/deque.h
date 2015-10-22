@@ -33,5 +33,8 @@ DQueue(bool print);
   int PopRight();
 
   void printQueFromRight();
+
+  void freeQue();
+
 };
 #endif

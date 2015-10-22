@@ -23,8 +23,8 @@ DQueue::DQueue(bool print)
       {
 	if (leftSentinel != NULL){
 	  leftSentinel->left = newNode;
-	  newNode->right = leftSentinel;
 	}
+	newNode->right = leftSentinel;
 	//If que was empty
 	if (rightSentinel == NULL){
 	  rightSentinel = newNode;
@@ -108,7 +108,7 @@ DQueue::DQueue(bool print)
     return val;
   }
 
-  void DQueue::printQueFromRight(){
+void DQueue::printQueFromRight(){
     if (rightSentinel == NULL){
       cout << "que is empty \n";
     }
@@ -119,6 +119,16 @@ DQueue::DQueue(bool print)
     }
     cout << "\n"; 
   }
+
+void DQueue::freeQue(){
+  while (rightSentinel != NULL){
+    QNode * temp = rightSentinel;
+    rightSentinel = rightSentinel->left;
+    delete temp;
+  }
+  rightSentinel = NULL;
+  leftSentinel = NULL;
+} 
 
 
 /*
