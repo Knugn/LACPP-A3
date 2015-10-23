@@ -22,7 +22,7 @@ class DQueue
 
  public:
 
-DQueue(bool print);
+DQueue();
 
   void PushLeft(int val);
 

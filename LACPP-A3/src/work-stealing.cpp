@@ -8,19 +8,52 @@ std::atomic<bool> terminate;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "deque.cpp"
+#include "deque.h"
 
 const int N = 4; // number of processors
 
 DQueue job_queue[N];
 
+int steelWork(int n){
+  int value = -1;
+  for (int i = 1; i < N; i++){
+    //the process shood alweys try to take work from the next process
+    int process = (n + i) % N; 
+    __transaction_relaxed{
+      value = job_queue[process].PopLeft();
+    }
+      if (value == -1){
+	continue;
+      }
+      else if (value == 0){
+	__transaction_relaxed{
+	  job_queue[process].PushLeft(0);
+	  continue;
+	}
+      }
+
+      std::cout << "process " << n << " stell work from proses " << process << std::endl;
+      return value;
+    }
+  return 0;
+}
+
 void processor(int n)
 {
   while (!terminate)
     {
-      // TODO
+      int value;
+      __transaction_relaxed{
+	value = job_queue[n].PopLeft();
+       }
+      if (value == -1){
+	value = steelWork(n);
+      }
+      //  sleep(value);
     }
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -41,11 +74,11 @@ void user()
 
       __transaction_relaxed
         {
-          std::cout << time << ": scheduling a job on processor " << p << " (duration: " << d << " s)." << std::endl;
+	  //   std::cout << time << ": scheduling a job on processor " << p << " (duration: " << d << " s)." << std::endl;
           job_queue[p].PushRight(d);
         }
 
-      sleep(1);
+      //sleep(1);
       ++time;
     }
 }
@@ -62,7 +95,7 @@ int main()
       processors[i] = std::thread(processor, i);
     }
 
-  sleep(60);
+  sleep(30);
   terminate = true;
 
   user_thread.join();

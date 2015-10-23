@@ -4,9 +4,9 @@
 using namespace std;
 
 
-DQueue::DQueue(bool print)
+DQueue::DQueue()
   {
-    this->print = print;
+
     leftSentinel = NULL;
     rightSentinel = NULL;
 
@@ -14,9 +14,6 @@ DQueue::DQueue(bool print)
 
   void DQueue::PushLeft(int val)
   {
-    if (print){
-      cout << "left adding: " << val << "\n";
-    }
     QNode * newNode = new QNode();
     newNode->val = val; 
     __transaction_atomic
@@ -35,9 +32,7 @@ DQueue::DQueue(bool print)
 
   void DQueue::PushRight(int val)
   {
-    if (print){
-      cout << "right adding: " << val << "\n";
-    }
+
     QNode * newNode = new QNode();
     newNode->val = val; 
     __transaction_atomic
@@ -56,11 +51,8 @@ DQueue::DQueue(bool print)
 
   int DQueue::PopLeft()
   {
-    if (print){
-      cout << "left poping \n";
-    }
     QNode * temp;
-    int val;
+    int val = 0;
     if (leftSentinel == NULL){
       return -1;
     }
@@ -83,11 +75,9 @@ DQueue::DQueue(bool print)
 
   int DQueue::PopRight()
   {
-    if (print){
-      cout << "right poping \n";
-    }
+
     QNode * temp;
-    int val;
+    int val = 0;
     if (rightSentinel == NULL){
       return -1;
     }
@@ -109,9 +99,7 @@ DQueue::DQueue(bool print)
   }
 
 void DQueue::printQueFromRight(){
-    if (rightSentinel == NULL){
-      cout << "que is empty \n";
-    }
+
     QNode * temp = rightSentinel;
     while(temp != NULL){
       cout << "value of node is: " << temp->val << " \n";

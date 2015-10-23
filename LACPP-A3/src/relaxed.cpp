@@ -3,7 +3,7 @@
 
 void f1()
 {
-  __transaction_atomic
+  __transaction_relaxed
     {
       std::cout << "Hello " << std::flush;
       std::cout << "world!" << std::flush;
@@ -22,6 +22,6 @@ int main()
 
   t1.join();
   t2.join();
-
+   std::cout << "\n";
   return 0;
 }
