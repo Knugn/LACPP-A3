@@ -21,20 +21,17 @@ int steelWork(int n){
     int process = (n + i) % N; 
     __transaction_relaxed{
       value = job_queue[process].PopLeft();
-    }
       if (value == -1){
 	continue;
       }
       else if (value == 0){
-	__transaction_relaxed{
-	  job_queue[process].PushLeft(0);
-	  continue;
-	}
+	job_queue[process].PushLeft(0);
+	continue;
       }
-
-      std::cout << "process " << n << " stell work from proses " << process << std::endl;
-      return value;
     }
+    std::cout << "process " << n << " stell work from proses " << process << " with duration " <<  value << std::endl;
+    return value;
+  }
   return 0;
 }
 
@@ -49,7 +46,10 @@ void processor(int n)
       if (value == -1){
 	value = steelWork(n);
       }
-      //  sleep(value);
+      if (value != 0){
+	std::cout << "process " << n << " sleeps for " << value << " seconds " << std::endl;
+      }
+      sleep(value);
     }
 }
 
@@ -74,11 +74,11 @@ void user()
 
       __transaction_relaxed
         {
-	  //   std::cout << time << ": scheduling a job on processor " << p << " (duration: " << d << " s)." << std::endl;
+	     std::cout << time << ": scheduling a job on processor " << p << " (duration: " << d << " s)." << std::endl;
           job_queue[p].PushRight(d);
         }
 
-      //sleep(1);
+      sleep(1);
       ++time;
     }
 }
