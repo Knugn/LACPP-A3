@@ -13,6 +13,10 @@ $(BIN)/exercise3.exe: $(OBJ)/exercise3.o $(OBJ)/deque.o
 	mkdir -p $(BIN)
 	$(CXX) $(CXXFLAGS) -o "$@" "$?" $(LIBS)
 
+$(BIN)/work-stealing.exe: $(OBJ)/work-stealing.o $(OBJ)/deque.o
+	mkdir -p $(BIN)
+	$(CXX) $(CXXFLAGS) -o "$@" "$?" $(LIBS)
+
 #hello.exe: 	$(OBJ)/hello.o
 #	mkdir -p $(BIN)
 #	$(CXX) $(CXXFLAGS) -o "$(BIN)/$@" $? $(LIBS)
