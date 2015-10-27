@@ -19,9 +19,14 @@ int main () {
 	  
   bool run2 = false;
   bool run3 = false;
-  run2 = true;
+  
   __transaction_atomic
     {
+     
+      __transaction_atomic
+	{
+	  run2 = true;
+	}
       if (run2){
 	run3 = true;
       }
