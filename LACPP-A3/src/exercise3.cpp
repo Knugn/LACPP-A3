@@ -12,28 +12,35 @@
 
 std::atomic<bool> terminate;
 
-void PushLeftWrok(long * counter,  DQueue * que){
+void PushLeftWrok(int * counter,  DQueue * que){
+  int c = 0;
   while(!terminate){
     que->PushLeft(0);
-    (*counter)++;
+    c++;
   }
+  *counter = c;
 }
 
-void PushAndPopWrok(long * counter,  DQueue * que){
+void PushAndPopWrok(int * counter,  DQueue * que){
+    int c = 0;
     while(!terminate){
       que->PushLeft(0);
       que->PopLeft();
-      (*counter)++;
+      c++;
       }
+    *counter = c;
 }
 
 
-void PushLeftPopRightWrok(long * counter,  DQueue * que){
-  while(!terminate){
+void PushLeftPopRightWrok(int * counter,  DQueue * que){
+
+    int c = 0;
+    while(!terminate){
     que->PushLeft(0);
     que->PopRight();
-    (*counter)++;
+    c++;
   }
+    *counter = c;
   
 }
 
@@ -52,15 +59,15 @@ int main(int argc, char *argv[])
     work = atoi(argv[2]);
     std::cout << "work set to: " << work << std::endl;
   }
-  int sleepTime = 2;
+  int sleepTime = 1;
   std::thread threads[n]; 
-  double timeTaken[n];
-  long counter[n];
+  double nrCounts[n];
+  int counter[n];
   int maxNrTimes = 10;
   DQueue que;
 
   for (int nrThread = 1; nrThread <= n; nrThread++){
-    timeTaken[nrThread-1] = 0;
+    nrCounts[nrThread-1] = 0;
     for (int nrTimes = 0; nrTimes < maxNrTimes; nrTimes++){
       int total = 0;
       for (int t = 0; t < nrThread; t++) {
@@ -86,11 +93,11 @@ int main(int argc, char *argv[])
       }
       terminate = false;
       
-      timeTaken[nrThread-1] += total;
+      nrCounts[nrThread-1] += total;
       que.freeQue();  
     }
 
-    timeTaken[nrThread-1] /= maxNrTimes;
+    nrCounts[nrThread-1] /= maxNrTimes;
   }//End of run
   std::cout << "problem time in s is " << sleepTime  << std::endl;
   
@@ -107,7 +114,7 @@ int main(int argc, char *argv[])
       break;
     }
   for (int i = 0; i < n; i++){
-    std::cout << "it took " << i+1 << " threads to finsih: " << timeTaken[i] << " computations" << std::endl;
+    std::cout << i+1 << " threads finsihed: " << nrCounts[i] << " computations" << std::endl;
   }
 
 }

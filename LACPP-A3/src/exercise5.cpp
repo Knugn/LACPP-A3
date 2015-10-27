@@ -33,7 +33,7 @@ int main () {
     }
   
   
-  cout << "the inner trasaction can se changes done by the outer transaction " <<  run3 << endl;
+  cout << "the outer trasaction can se changes done by the iner transaction " <<  run3 << endl;
   
   
 }
