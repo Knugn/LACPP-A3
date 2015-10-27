@@ -1,54 +1,38 @@
+#include <atomic>
 #include <cstddef>
 #include <iostream>
 #include <thread>         // std::thread
 #include <ctime>
 #include <cstdlib>
 #include "deque.h"
+#include <unistd.h>
 
-using namespace std;
-
-int time = 20;
-
+//using namespace std;
 
 
-void PushLeftWrok(int nrTimes,int * counter,  DQueue * que){
-    auto t_start = std::chrono::high_resolution_clock::now();
-  auto t_end = std::chrono::high_resolution_clock::now();
-  double realTimeMs = std::chrono::duration<double, std::milli>(t_end-t_start).count();
-    while(realTimeMs < nrTimes){
+std::atomic<bool> terminate;
+
+void PushLeftWrok(int nrTimes,long * counter,  DQueue * que){
+  while(!terminate){
     que->PushLeft(0);
-	(*counter)++;
+    (*counter)++;
   }
-    
-    t_end = std::chrono::high_resolution_clock::now();
-    realTimeMs = std::chrono::duration<double, std::milli>(t_end-t_start).count();
 }
 
-void PushAndPopWrok(int nrTimes,int * counter,  DQueue * que){
-    auto t_start = std::chrono::high_resolution_clock::now();
-  auto t_end = std::chrono::high_resolution_clock::now();
-  double realTimeMs = std::chrono::duration<double, std::milli>(t_end-t_start).count();
-    while(realTimeMs < nrTimes){
+void PushAndPopWrok(int nrTimes,long * counter,  DQueue * que){
+    while(!terminate){
       que->PushLeft(0);
       que->PopLeft();
       (*counter)++;
-    }
-      t_end = std::chrono::high_resolution_clock::now();
-    realTimeMs = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+      }
 }
 
 
-void PushLeftPopRightWrok(int nrTimes,int * counter,  DQueue * que){
-  auto t_start = std::chrono::high_resolution_clock::now();
-  auto t_end = std::chrono::high_resolution_clock::now();
-  double realTimeMs = std::chrono::duration<double, std::milli>(t_end-t_start).count();
-
-  while(realTimeMs < nrTimes){
+void PushLeftPopRightWrok(int nrTimes,long * counter,  DQueue * que){
+  while(!terminate){
     que->PushLeft(0);
     que->PopRight();
     (*counter)++;
-    t_end = std::chrono::high_resolution_clock::now();
-    realTimeMs = std::chrono::duration<double, std::milli>(t_end-t_start).count();
   }
   
 }
@@ -58,38 +42,72 @@ void PushLeftPopRightWrok(int nrTimes,int * counter,  DQueue * que){
 int main(int argc, char *argv[])
 {
   int n = 2;
+  int work = 0;
   if (argc >= 2){
     n = atoi(argv[1]);
-    std::cout << "threads set to: " << n << endl;
+    std::cout << "threads set to: " << n << std::endl;
   }
-  int nrCalculations = 1000000;
-  thread threads[n]; 
+
+  if (argc >= 3){
+    work = atoi(argv[2]);
+    std::cout << "work set to: " << work << std::endl;
+  }
+  int nrCalculations = 1;
+  std::thread threads[n]; 
   double timeTaken[n];
-  int maxNrTimes = 10;
+  long counter[n];
+  int maxNrTimes = 1;
   DQueue que;
 
   for (int nrThread = 1; nrThread <= n; nrThread++){
     timeTaken[nrThread-1] = 0;
     for (int nrTimes = 0; nrTimes < maxNrTimes; nrTimes++){
-      int counter = 0;
+      int total = 0;
       for (int t = 0; t < nrThread; t++) {
-	threads[t] = thread(PushLeftPopRightWrok,nrCalculations,&counter,&que);
+	counter[t] = 0;
+	switch (work)
+	  {
+	  case 0:
+	    threads[t] = std::thread(PushLeftWrok,nrCalculations,&counter[t],&que);
+	    break;
+	  case 1:
+	    threads[t] = std::thread(PushAndPopWrok,nrCalculations,&counter[t],&que);
+	    break;
+	  case 2:
+	    threads[t] = std::thread(PushLeftPopRightWrok,nrCalculations,&counter[t],&que);
+	    break;
+	  }
       }
+      sleep(nrCalculations);
+      terminate = true;
       for (int t = 0; t < nrThread; t++) {
-	threads[t].join();    
+	threads[t].join();
+	total += counter[t];
       }
+      terminate = false;
       
-      //std::cout << "time taken: " << realTimeMs << endl; 
-      timeTaken[nrThread-1] += realTimeMs;
+      timeTaken[nrThread-1] += total;
       que.freeQue();  
     }
 
     timeTaken[nrThread-1] /= maxNrTimes;
   }//End of run
-  std::cout << "size of problem is " << nrCalculations  << std::endl;
-  std::cout << "problem is PushLeftPopRightWrok" << std::endl;
+  std::cout << "problem time in s is " << nrCalculations  << std::endl;
+  
+  switch (work)
+    {
+    case 0:
+      std::cout << "problem is PushLeftWrok" << std::endl;
+      break;
+    case 1:
+      std::cout << "problem is PushAndPopWrok" << std::endl;
+      break;
+    case 2:
+      std::cout << "problem is PushLeftPopRightWrok" << std::endl;
+      break;
+    }
   for (int i = 0; i < n; i++){
-    std::cout << "it took " << i+1 << " threads to finsih in: " << timeTaken[i] << endl;
+    std::cout << "it took " << i+1 << " threads to finsih: " << timeTaken[i] << " computations" << std::endl;
   }
 
 }
