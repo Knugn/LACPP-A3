@@ -39,8 +39,8 @@ DQueue::DQueue()
       {
 	if (rightSentinel != NULL){
 	  rightSentinel->right = newNode;
-	  newNode->left = rightSentinel;
 	}
+	newNode->left = rightSentinel;
 	//If que was empty
 	if (leftSentinel == NULL){
 	  leftSentinel = newNode;
@@ -58,7 +58,6 @@ DQueue::DQueue()
     }
     __transaction_atomic
       {
-	val = leftSentinel->val;
 	temp = leftSentinel;
 	leftSentinel = leftSentinel->right;
 	//if que not empty
@@ -69,6 +68,7 @@ DQueue::DQueue()
 	}
 	
       }
+    val = temp->val;
     delete temp;
     return val;
   }
@@ -83,7 +83,6 @@ DQueue::DQueue()
     }
     __transaction_atomic
       {
-	val = rightSentinel->val;
 	temp = rightSentinel;
 	rightSentinel = rightSentinel->left;
 	//if que not empty
@@ -94,6 +93,7 @@ DQueue::DQueue()
 	}
 
       }
+    val = temp->val;
     delete temp;
     return val;
   }
