@@ -1,4 +1,4 @@
-CXXFLAGS = -std=c++0x -O2 -g -Wall -pthreads -fgnu-tm -fmessage-length=0
+CXXFLAGS = -std=c++0x -O2 -g -Wall -pthread  -fgnu-tm -fmessage-length=0
 LIBS =
 # -fgnu-tm
 SRC=src
@@ -7,7 +7,7 @@ BIN=bin
 DBG=$(BIN)/debug
 RLS=$(BIN)/release
 
-all:	$(BIN)/hello.exe $(BIN)/transactions.exe $(BIN)/exercise3.exe $(BIN)/exercise4.exe $(BIN)/exercise5.exe $(BIN)/relaxed.exe $(BIN)/work-stealing.exe
+all:	 $(BIN)/transactions.exe $(BIN)/exercise3.exe $(BIN)/exercise4.exe $(BIN)/exercise5.exe $(BIN)/relaxed.exe $(BIN)/work-stealing.exe
 
 $(BIN)/exercise3.exe: $(OBJ)/exercise3.o $(OBJ)/deque.o
 	mkdir -p $(BIN)
