@@ -12,14 +12,14 @@
 
 std::atomic<bool> terminate;
 
-void PushLeftWrok(int nrTimes,long * counter,  DQueue * que){
+void PushLeftWrok(long * counter,  DQueue * que){
   while(!terminate){
     que->PushLeft(0);
     (*counter)++;
   }
 }
 
-void PushAndPopWrok(int nrTimes,long * counter,  DQueue * que){
+void PushAndPopWrok(long * counter,  DQueue * que){
     while(!terminate){
       que->PushLeft(0);
       que->PopLeft();
@@ -28,7 +28,7 @@ void PushAndPopWrok(int nrTimes,long * counter,  DQueue * que){
 }
 
 
-void PushLeftPopRightWrok(int nrTimes,long * counter,  DQueue * que){
+void PushLeftPopRightWrok(long * counter,  DQueue * que){
   while(!terminate){
     que->PushLeft(0);
     que->PopRight();
@@ -52,11 +52,11 @@ int main(int argc, char *argv[])
     work = atoi(argv[2]);
     std::cout << "work set to: " << work << std::endl;
   }
-  int nrCalculations = 1;
+  int sleepTime = 2;
   std::thread threads[n]; 
   double timeTaken[n];
   long counter[n];
-  int maxNrTimes = 1;
+  int maxNrTimes = 10;
   DQueue que;
 
   for (int nrThread = 1; nrThread <= n; nrThread++){
@@ -68,17 +68,17 @@ int main(int argc, char *argv[])
 	switch (work)
 	  {
 	  case 0:
-	    threads[t] = std::thread(PushLeftWrok,nrCalculations,&counter[t],&que);
+	    threads[t] = std::thread(PushLeftWrok,&counter[t],&que);
 	    break;
 	  case 1:
-	    threads[t] = std::thread(PushAndPopWrok,nrCalculations,&counter[t],&que);
+	    threads[t] = std::thread(PushAndPopWrok,&counter[t],&que);
 	    break;
 	  case 2:
-	    threads[t] = std::thread(PushLeftPopRightWrok,nrCalculations,&counter[t],&que);
+	    threads[t] = std::thread(PushLeftPopRightWrok,&counter[t],&que);
 	    break;
 	  }
       }
-      sleep(nrCalculations);
+      sleep(sleepTime);
       terminate = true;
       for (int t = 0; t < nrThread; t++) {
 	threads[t].join();
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 
     timeTaken[nrThread-1] /= maxNrTimes;
   }//End of run
-  std::cout << "problem time in s is " << nrCalculations  << std::endl;
+  std::cout << "problem time in s is " << sleepTime  << std::endl;
   
   switch (work)
     {
